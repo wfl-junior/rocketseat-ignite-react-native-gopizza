@@ -1,11 +1,15 @@
 {
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
     "isolatedModules": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
-  },
-  "extends": "expo/tsconfig.base"
+    "noUnusedParameters": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"]
+    }
+  }
 }
