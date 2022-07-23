@@ -4,7 +4,9 @@ import { loadAsync } from "expo-font";
 import { hideAsync, preventAutoHideAsync } from "expo-splash-screen";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { StatusBar, View } from "react-native";
+import { ThemeProvider } from "styled-components/native";
 import { Home } from "~/screens/Home";
+import { theme } from "~/theme";
 
 export const App: React.FC = () => {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -53,9 +55,11 @@ export const App: React.FC = () => {
         translucent
       />
 
-      <View onLayout={handleLayoutRootView} style={{ flex: 1 }}>
-        <Home />
-      </View>
+      <ThemeProvider theme={theme}>
+        <View onLayout={handleLayoutRootView} style={{ flex: 1 }}>
+          <Home />
+        </View>
+      </ThemeProvider>
     </Fragment>
   );
 };
