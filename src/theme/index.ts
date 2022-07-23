@@ -1,9 +1,13 @@
+const primary = {
+  900: "#B83341",
+  800: "#E03F50",
+};
+
 export const theme = {
   colors: {
     background: "#F7F7F7",
     primary: {
-      900: "#B83341",
-      800: "#E03F50",
+      ...primary,
       100: "#D16470",
       50: "#FFABB3",
     },
@@ -23,7 +27,7 @@ export const theme = {
     },
     shape: "#DCDCDC",
     title: "#FFF",
-    gradient: ["#B83341", "#E03F50"],
+    gradient: [primary[900], primary[800]],
   },
   fonts: {
     title: "DMSerifDisplay_400Regular",
