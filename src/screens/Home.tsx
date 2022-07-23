@@ -9,8 +9,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 36,
-    fontWeight: "bold",
     color: "white",
+    fontFamily: "DMSerifDisplay_400Regular",
   },
 });
 
