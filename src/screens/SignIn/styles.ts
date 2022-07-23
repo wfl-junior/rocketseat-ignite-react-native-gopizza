@@ -16,7 +16,6 @@ export const Container = styled(LinearGradient).attrs(({ theme }) => {
 })`
   flex: 1;
   background-color: ${({ theme }) => theme.colors.primary[900]};
-  align-items: center;
   justify-content: center;
 `;
 

@@ -3,7 +3,8 @@ import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display";
 import { loadAsync } from "expo-font";
 import { hideAsync, preventAutoHideAsync } from "expo-splash-screen";
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { StatusBar, View } from "react-native";
+import { StatusBar } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ThemeProvider } from "styled-components/native";
 import { SignIn } from "~/screens/SignIn";
 import { theme } from "~/theme";
@@ -56,9 +57,12 @@ export const App: React.FC = () => {
       />
 
       <ThemeProvider theme={theme}>
-        <View onLayout={handleLayoutRootView} style={{ flex: 1 }}>
+        <GestureHandlerRootView
+          onLayout={handleLayoutRootView}
+          style={{ flex: 1 }}
+        >
           <SignIn />
-        </View>
+        </GestureHandlerRootView>
       </ThemeProvider>
     </Fragment>
   );
