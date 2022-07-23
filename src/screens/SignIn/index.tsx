@@ -1,7 +1,7 @@
 import { Container, Title } from "./styles";
 
-export const Home: React.FC = () => (
+export const SignIn: React.FC = () => (
   <Container>
-    <Title>Hello World</Title>
+    <Title>GoPizza</Title>
   </Container>
 );

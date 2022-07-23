@@ -5,7 +5,7 @@ import { hideAsync, preventAutoHideAsync } from "expo-splash-screen";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { StatusBar, View } from "react-native";
 import { ThemeProvider } from "styled-components/native";
-import { Home } from "~/screens/Home";
+import { SignIn } from "~/screens/SignIn";
 import { theme } from "~/theme";
 
 export const App: React.FC = () => {
@@ -57,7 +57,7 @@ export const App: React.FC = () => {
 
       <ThemeProvider theme={theme}>
         <View onLayout={handleLayoutRootView} style={{ flex: 1 }}>
-          <Home />
+          <SignIn />
         </View>
       </ThemeProvider>
     </Fragment>
