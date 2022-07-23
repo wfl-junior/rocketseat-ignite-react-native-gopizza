@@ -1,7 +1,9 @@
-import { Container, Title } from "./styles";
+import { Input } from "~/components/Input";
+import { Container } from "./styles";
 
 export const SignIn: React.FC = () => (
   <Container>
-    <Title>GoPizza</Title>
+    <Input placeholder="E-mail" type="secondary" keyboardType="email-address" />
+    <Input placeholder="Senha" type="secondary" secureTextEntry />
   </Container>
 );
