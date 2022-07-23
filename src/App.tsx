@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ThemeProvider } from "styled-components/native";
 import { SignIn } from "~/screens/SignIn";
 import { theme } from "~/theme";
+import { AuthContextProvider } from "./contexts/AuthContext";
 
 export const App: React.FC = () => {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -57,12 +58,14 @@ export const App: React.FC = () => {
       />
 
       <ThemeProvider theme={theme}>
-        <GestureHandlerRootView
-          onLayout={handleLayoutRootView}
-          style={{ flex: 1 }}
-        >
-          <SignIn />
-        </GestureHandlerRootView>
+        <AuthContextProvider>
+          <GestureHandlerRootView
+            onLayout={handleLayoutRootView}
+            style={{ flex: 1 }}
+          >
+            <SignIn />
+          </GestureHandlerRootView>
+        </AuthContextProvider>
       </ThemeProvider>
     </Fragment>
   );
