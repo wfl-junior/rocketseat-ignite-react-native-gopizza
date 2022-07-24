@@ -33,6 +33,8 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
           email,
           password,
         );
+
+        console.log(account);
       } catch (error: any) {
         let errorMessage = "Não foi possível entrar.";
 
