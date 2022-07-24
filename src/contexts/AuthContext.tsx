@@ -1,8 +1,16 @@
 import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 import { createContext, useCallback, useContext, useState } from "react";
 import { Alert } from "react-native";
 
+interface User {
+  id: string;
+  name: string;
+  isAdmin: boolean;
+}
+
 interface AuthContextData {
+  user: User | null;
   signIn: (email: string, password: string) => Promise<void>;
   isSigningIn: boolean;
 }
@@ -18,6 +26,7 @@ interface AuthContextProviderProps {
 export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   children,
 }) => {
+  const [user, setUser] = useState<AuthContextData["user"]>(null);
   const [isSigningIn, setIsSigningIn] = useState(false);
 
   const signIn: AuthContextData["signIn"] = useCallback(
@@ -29,12 +38,23 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
       setIsSigningIn(true);
 
       try {
-        const account = await auth().signInWithEmailAndPassword(
+        const { user } = await auth().signInWithEmailAndPassword(
           email,
           password,
         );
 
-        console.log(account);
+        const profile = await firestore()
+          .collection<Omit<User, "id">>("users")
+          .doc(user.uid)
+          .get();
+
+        const { name, isAdmin } = profile.data()!;
+
+        setUser({
+          id: user.uid,
+          name,
+          isAdmin,
+        });
       } catch (error: any) {
         let errorMessage = "Não foi possível entrar.";
 
@@ -59,6 +79,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   return (
     <AuthContext.Provider
       value={{
+        user,
         signIn,
         isSigningIn,
       }}
