@@ -4,7 +4,15 @@
     "slug": "gopizza",
     "version": "1.0.0",
     "assetBundlePatterns": ["**/*"],
-    "plugins": ["@react-native-firebase/app"],
+    "plugins": [
+      "@react-native-firebase/app",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
     "android": {
       "package": "com.gopizza",
       "googleServicesFile": "./google-services.json"
