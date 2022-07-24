@@ -16,14 +16,13 @@ export const Container = styled(LinearGradient).attrs(({ theme }) => {
   };
 })`
   flex: 1;
-  background-color: ${({ theme }) => theme.colors.primary[900]};
   justify-content: center;
 `;
 
 export const Content = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
   contentContainerStyle: {
-    paddingBottom: getBottomSpace() + 48,
+    paddingBottom: getBottomSpace() + 16,
   },
 })`
   width: 100%;

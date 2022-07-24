@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { KeyboardAvoidingView } from "react-native";
 import brandImage from "~/assets/brand.png";
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
@@ -32,46 +27,41 @@ export const SignIn: React.FC = () => {
   }
 
   return (
-    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
-      <Container>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          enabled
-        >
-          <Content>
-            <Brand source={brandImage} />
+    <Container>
+      <Content>
+        <KeyboardAvoidingView behavior="position" enabled>
+          <Brand source={brandImage} />
 
-            <Title>Login</Title>
+          <Title>Login</Title>
 
-            <Input
-              placeholder="E-mail"
-              type="secondary"
-              keyboardType="email-address"
-              value={email}
-              onChangeText={setEmail}
-            />
+          <Input
+            placeholder="E-mail"
+            type="secondary"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
+          />
 
-            <Input
-              placeholder="Senha"
-              type="secondary"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
+          <Input
+            placeholder="Senha"
+            type="secondary"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
 
-            <ForgotPasswordButton onPress={handleForgotPassword}>
-              <ForgotPasswordLabel>Esqueci minha senha</ForgotPasswordLabel>
-            </ForgotPasswordButton>
+          <ForgotPasswordButton onPress={handleForgotPassword}>
+            <ForgotPasswordLabel>Esqueci minha senha</ForgotPasswordLabel>
+          </ForgotPasswordButton>
 
-            <Button
-              title="Entrar"
-              type="secondary"
-              onPress={handleSignIn}
-              isLoading={isSigningIn}
-            />
-          </Content>
+          <Button
+            title="Entrar"
+            type="secondary"
+            onPress={handleSignIn}
+            isLoading={isSigningIn}
+          />
         </KeyboardAvoidingView>
-      </Container>
-    </TouchableWithoutFeedback>
+      </Content>
+    </Container>
   );
 };
