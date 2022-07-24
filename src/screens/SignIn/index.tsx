@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -7,6 +8,7 @@ import {
 import brandImage from "~/assets/brand.png";
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
+import { useAuthContext } from "~/contexts/AuthContext";
 import {
   Brand,
   Container,
@@ -16,33 +18,56 @@ import {
   Title,
 } from "./styles";
 
-export const SignIn: React.FC = () => (
-  <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
-    <Container>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        enabled
-      >
-        <Content>
-          <Brand source={brandImage} />
+export const SignIn: React.FC = () => {
+  const { signIn, isSigningIn } = useAuthContext();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-          <Title>Login</Title>
+  async function handleSignIn() {
+    await signIn(email, password);
+  }
 
-          <Input
-            placeholder="E-mail"
-            type="secondary"
-            keyboardType="email-address"
-          />
+  return (
+    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
+      <Container>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          enabled
+        >
+          <Content>
+            <Brand source={brandImage} />
 
-          <Input placeholder="Senha" type="secondary" secureTextEntry />
+            <Title>Login</Title>
 
-          <ForgotPasswordButton>
-            <ForgotPasswordLabel>Esqueci minha senha</ForgotPasswordLabel>
-          </ForgotPasswordButton>
+            <Input
+              placeholder="E-mail"
+              type="secondary"
+              keyboardType="email-address"
+              value={email}
+              onChangeText={setEmail}
+            />
 
-          <Button title="Entrar" type="secondary" />
-        </Content>
-      </KeyboardAvoidingView>
-    </Container>
-  </TouchableWithoutFeedback>
-);
+            <Input
+              placeholder="Senha"
+              type="secondary"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
+
+            <ForgotPasswordButton>
+              <ForgotPasswordLabel>Esqueci minha senha</ForgotPasswordLabel>
+            </ForgotPasswordButton>
+
+            <Button
+              title="Entrar"
+              type="secondary"
+              onPress={handleSignIn}
+              isLoading={isSigningIn}
+            />
+          </Content>
+        </KeyboardAvoidingView>
+      </Container>
+    </TouchableWithoutFeedback>
+  );
+};
