@@ -21,6 +21,7 @@ interface AuthContextData {
   user: User | null;
   signIn: (email: string, password: string) => Promise<void>;
   isSigningIn: boolean;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext({} as AuthContextData);
@@ -82,8 +83,6 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
           ASYNC_STORAGE_USERS_KEY,
           JSON.stringify(userData),
         ).catch(console.warn);
-
-        ASYNC_STORAGE_USERS_KEY;
       } catch (error: any) {
         let errorMessage = "Não foi possível entrar.";
 
@@ -105,12 +104,24 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     [],
   );
 
+  const signOut: AuthContextData["signOut"] = useCallback(async () => {
+    try {
+      setUser(null);
+      await auth().signOut();
+      AsyncStorage.removeItem(ASYNC_STORAGE_USERS_KEY).catch(console.warn);
+    } catch (error) {
+      console.warn(error);
+      Alert.alert("Logout", "Não foi possível sair");
+    }
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
         user,
         signIn,
         isSigningIn,
+        signOut,
       }}
     >
       {children}
