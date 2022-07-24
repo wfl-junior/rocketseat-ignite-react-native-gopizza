@@ -1,7 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { createContext, useCallback, useContext, useState } from "react";
 import { Alert } from "react-native";
+import { ASYNC_STORAGE_USERS_KEY } from "~/utils/constants";
 
 interface User {
   id: string;
@@ -50,11 +52,23 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 
         const { name, isAdmin } = profile.data()!;
 
-        setUser({
+        const userData: User = {
           id: user.uid,
           name,
           isAdmin,
+        };
+
+        setUser(userData);
+
+        AsyncStorage.setItem(
+          ASYNC_STORAGE_USERS_KEY,
+          JSON.stringify(userData),
+        ).catch(error => {
+          console.warn(error);
+          Alert.alert("Não foi possível persistir os dados.");
         });
+
+        ASYNC_STORAGE_USERS_KEY;
       } catch (error: any) {
         let errorMessage = "Não foi possível entrar.";
 
