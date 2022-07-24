@@ -5,9 +5,15 @@ import {
   requestMediaLibraryPermissionsAsync,
 } from "expo-image-picker";
 import { useState } from "react";
-import { TouchableOpacity } from "react-native";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { BackButton } from "~/components/BackButton";
 import { Photo } from "~/components/Photo";
+import { PriceInput } from "~/components/PriceInput";
 import {
   Container,
   DeleteLabel,
@@ -36,26 +42,34 @@ export const Product: React.FC = () => {
   }
 
   return (
-    <Container behavior="position" enabled>
-      <Header>
-        <BackButton />
+    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
+      <Container>
+        <KeyboardAvoidingView behavior="position" enabled>
+          <Header>
+            <BackButton />
 
-        <Title>Cadastrar</Title>
+            <Title>Cadastrar</Title>
 
-        <TouchableOpacity>
-          <DeleteLabel>Deletar</DeleteLabel>
-        </TouchableOpacity>
-      </Header>
+            <TouchableOpacity>
+              <DeleteLabel>Deletar</DeleteLabel>
+            </TouchableOpacity>
+          </Header>
 
-      <Upload>
-        <Photo uri={image} />
+          <Upload>
+            <Photo uri={image} />
 
-        <PickImageButton
-          title="Carregar"
-          type="secondary"
-          onPress={handlePickImage}
-        />
-      </Upload>
-    </Container>
+            <PickImageButton
+              title="Carregar"
+              type="secondary"
+              onPress={handlePickImage}
+            />
+          </Upload>
+
+          <PriceInput size="P" />
+          <PriceInput size="M" />
+          <PriceInput size="G" />
+        </KeyboardAvoidingView>
+      </Container>
+    </TouchableWithoutFeedback>
   );
 };
