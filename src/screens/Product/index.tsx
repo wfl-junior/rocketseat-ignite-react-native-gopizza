@@ -1,3 +1,10 @@
+import {
+  launchImageLibraryAsync,
+  MediaTypeOptions,
+  PermissionStatus,
+  requestMediaLibraryPermissionsAsync,
+} from "expo-image-picker";
+import { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { BackButton } from "~/components/BackButton";
 import { Photo } from "~/components/Photo";
@@ -10,21 +17,45 @@ import {
   Upload,
 } from "./styles";
 
-export const Product: React.FC = () => (
-  <Container behavior="position" enabled>
-    <Header>
-      <BackButton />
+export const Product: React.FC = () => {
+  const [image, setImage] = useState<string | null>(null);
 
-      <Title>Cadastrar</Title>
+  async function handlePickImage() {
+    const { status } = await requestMediaLibraryPermissionsAsync();
 
-      <TouchableOpacity>
-        <DeleteLabel>Deletar</DeleteLabel>
-      </TouchableOpacity>
-    </Header>
+    if (status === PermissionStatus.GRANTED) {
+      const result = await launchImageLibraryAsync({
+        mediaTypes: MediaTypeOptions.Images,
+        aspect: [4, 4],
+      });
 
-    <Upload>
-      <Photo uri="" />
-      <PickImageButton title="Carregar" type="secondary" />
-    </Upload>
-  </Container>
-);
+      if (!result.cancelled) {
+        setImage(result.uri);
+      }
+    }
+  }
+
+  return (
+    <Container behavior="position" enabled>
+      <Header>
+        <BackButton />
+
+        <Title>Cadastrar</Title>
+
+        <TouchableOpacity>
+          <DeleteLabel>Deletar</DeleteLabel>
+        </TouchableOpacity>
+      </Header>
+
+      <Upload>
+        <Photo uri={image} />
+
+        <PickImageButton
+          title="Carregar"
+          type="secondary"
+          onPress={handlePickImage}
+        />
+      </Upload>
+    </Container>
+  );
+};
