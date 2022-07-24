@@ -1,7 +1,14 @@
-import { Container } from "./styles";
+import { TouchableOpacity } from "react-native";
+import { Container, DeleteLabel, Header, Title } from "./styles";
 
-interface ProductProps {}
+export const Product: React.FC = () => (
+  <Container behavior="position" enabled>
+    <Header>
+      <Title>Cadastrar</Title>
 
-export const Product: React.FC<ProductProps> = () => (
-  <Container behavior="position" enabled></Container>
+      <TouchableOpacity>
+        <DeleteLabel>Deletar</DeleteLabel>
+      </TouchableOpacity>
+    </Header>
+  </Container>
 );
