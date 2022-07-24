@@ -5,7 +5,7 @@ import { Container } from "./styles";
 
 interface BackButtonProps extends TouchableOpacityProps {}
 
-export const BackButton: React.FC<BackButtonProps> = ({ ...props }) => {
+export const BackButton: React.FC<BackButtonProps> = props => {
   const { colors } = useTheme();
 
   return (

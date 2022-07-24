@@ -1,5 +1,6 @@
 import { TouchableOpacity } from "react-native";
 import { BackButton } from "~/components/BackButton";
+import { Photo } from "~/components/Photo";
 import { Container, DeleteLabel, Header, Title } from "./styles";
 
 export const Product: React.FC = () => (
@@ -13,5 +14,7 @@ export const Product: React.FC = () => (
         <DeleteLabel>Deletar</DeleteLabel>
       </TouchableOpacity>
     </Header>
+
+    <Photo uri="" />
   </Container>
 );
