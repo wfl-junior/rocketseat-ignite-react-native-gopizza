@@ -1,7 +1,14 @@
 import { TouchableOpacity } from "react-native";
 import { BackButton } from "~/components/BackButton";
 import { Photo } from "~/components/Photo";
-import { Container, DeleteLabel, Header, Title } from "./styles";
+import {
+  Container,
+  DeleteLabel,
+  Header,
+  PickImageButton,
+  Title,
+  Upload,
+} from "./styles";
 
 export const Product: React.FC = () => (
   <Container behavior="position" enabled>
@@ -15,6 +22,9 @@ export const Product: React.FC = () => (
       </TouchableOpacity>
     </Header>
 
-    <Photo uri="" />
+    <Upload>
+      <Photo uri="" />
+      <PickImageButton title="Carregar" type="secondary" />
+    </Upload>
   </Container>
 );
