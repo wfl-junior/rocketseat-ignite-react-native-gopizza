@@ -22,6 +22,7 @@ interface AuthContextData {
   signIn: (email: string, password: string) => Promise<void>;
   isSigningIn: boolean;
   signOut: () => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext({} as AuthContextData);
@@ -115,6 +116,31 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     }
   }, []);
 
+  const forgotPassword: AuthContextData["forgotPassword"] = useCallback(
+    async email => {
+      if (!email) {
+        return Alert.alert("Esqueci minha senha", "Informe o e-mail.");
+      }
+
+      try {
+        await auth().sendPasswordResetEmail(email);
+
+        Alert.alert(
+          "Esqueci minha senha",
+          "Enviamos um link no seu e-mail para redefinir sua senha.",
+        );
+      } catch (error) {
+        console.warn(error);
+
+        Alert.alert(
+          "Esqueci minha senha",
+          "Não foi possível enviar o e-mail para redefinir a senha.",
+        );
+      }
+    },
+    [],
+  );
+
   return (
     <AuthContext.Provider
       value={{
@@ -122,6 +148,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
         signIn,
         isSigningIn,
         signOut,
+        forgotPassword,
       }}
     >
       {children}

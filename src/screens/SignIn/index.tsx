@@ -19,12 +19,16 @@ import {
 } from "./styles";
 
 export const SignIn: React.FC = () => {
-  const { signIn, isSigningIn } = useAuthContext();
+  const { signIn, isSigningIn, forgotPassword } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   async function handleSignIn() {
     await signIn(email, password);
+  }
+
+  async function handleForgotPassword() {
+    await forgotPassword(email);
   }
 
   return (
@@ -55,7 +59,7 @@ export const SignIn: React.FC = () => {
               onChangeText={setPassword}
             />
 
-            <ForgotPasswordButton>
+            <ForgotPasswordButton onPress={handleForgotPassword}>
               <ForgotPasswordLabel>Esqueci minha senha</ForgotPasswordLabel>
             </ForgotPasswordButton>
 
