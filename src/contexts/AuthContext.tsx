@@ -9,12 +9,11 @@ import {
   useState,
 } from "react";
 import { Alert } from "react-native";
+import { UserDTO } from "~/DTOs/UserDTO";
 import { ASYNC_STORAGE_USERS_KEY } from "~/utils/constants";
 
-interface User {
+interface User extends UserDTO {
   id: string;
-  name: string;
-  isAdmin: boolean;
 }
 
 interface AuthContextData {
@@ -66,7 +65,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
         );
 
         const profile = await firestore()
-          .collection<Omit<User, "id">>("users")
+          .collection<UserDTO>("users")
           .doc(user.uid)
           .get();
 

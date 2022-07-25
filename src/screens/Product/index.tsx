@@ -1,3 +1,5 @@
+import firestore from "@react-native-firebase/firestore";
+import storage from "@react-native-firebase/storage";
 import {
   launchImageLibraryAsync,
   MediaTypeOptions,
@@ -16,6 +18,7 @@ import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
 import { Photo } from "~/components/Photo";
 import { PriceInput } from "~/components/PriceInput";
+import { PizzaDTO } from "~/DTOs/PizzaDTO";
 import {
   Container,
   DeleteLabel,
@@ -72,6 +75,46 @@ export const Product: React.FC = () => {
         "Cadastro",
         "Informe o preço de todos os tamanhos da pizza.",
       );
+    }
+
+    setIsLoading(true);
+
+    try {
+      const fileName = Date.now();
+      const fileExtension = image.split(".").pop() || "png";
+      const reference = storage().ref(`/pizzas/${fileName}.${fileExtension}`);
+
+      await reference.putFile(image);
+      const imageUrl = await reference.getDownloadURL();
+
+      await firestore()
+        .collection<PizzaDTO>("pizzas")
+        .add({
+          name,
+          nameInsensitive: name.toLowerCase().trim(),
+          description,
+          prices: {
+            P: priceSizeP,
+            M: priceSizeM,
+            G: priceSizeG,
+          },
+          imageUrl,
+          imagePath: reference.fullPath,
+        });
+
+      setImage(null);
+      setName("");
+      setDescription("");
+      setPriceSizeP("");
+      setPriceSizeM("");
+      setPriceSizeG("");
+
+      Alert.alert("Cadastro", "Pizza cadastrada com sucesso.");
+    } catch (error) {
+      console.warn(error);
+      Alert.alert("Cadastro", "Não foi possível cadastrar a pizza.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
