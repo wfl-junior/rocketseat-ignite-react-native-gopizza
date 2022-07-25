@@ -8,7 +8,10 @@ import {
   GreetingEmoji,
   GreetingText,
   Header,
+  MenuHeader,
+  MenuItemsNumber,
   SignOutButton,
+  Title,
 } from "./styles";
 
 export const Home: React.FC = () => {
@@ -28,6 +31,11 @@ export const Home: React.FC = () => {
       </Header>
 
       <Search onSearch={() => {}} onClear={() => {}} />
+
+      <MenuHeader>
+        <Title>Cardápio</Title>
+        <MenuItemsNumber>10 pizzas</MenuItemsNumber>
+      </MenuHeader>
     </Container>
   );
 };

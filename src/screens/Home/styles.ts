@@ -44,3 +44,32 @@ export const SignOutButton = styled(TouchableOpacity)`
   justify-content: center;
   align-items: center;
 `;
+
+export const MenuHeader = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 25px 24px 0;
+  padding-bottom: 22px;
+  border-bottom-width: 1px;
+  border-bottom-color: ${({ theme }) => theme.colors.shape};
+`;
+
+export const MenuItemsNumber = styled.Text`
+  font-size: 14px;
+
+  ${({ theme }) => css`
+    font-family: ${theme.fonts.text};
+    color: ${theme.colors.secondary[900]};
+  `}
+`;
+
+export const Title = styled.Text`
+  font-size: 20px;
+  line-height: 20px;
+
+  ${({ theme }) => css`
+    font-family: ${theme.fonts.title};
+    color: ${theme.colors.secondary[900]};
+  `}
+`;
