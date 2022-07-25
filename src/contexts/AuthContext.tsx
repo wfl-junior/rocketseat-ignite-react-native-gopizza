@@ -18,6 +18,7 @@ interface User extends UserDTO {
 
 interface AuthContextData {
   user: User | null;
+  isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   isSigningIn: boolean;
   signOut: () => Promise<void>;
@@ -144,6 +145,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     <AuthContext.Provider
       value={{
         user,
+        isAuthenticated: !!user,
         signIn,
         isSigningIn,
         signOut,

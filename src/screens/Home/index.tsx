@@ -7,6 +7,7 @@ import { useTheme } from "styled-components/native";
 import happyEmoji from "~/assets/happy.png";
 import { ProductCard, ProductData } from "~/components/ProductCard";
 import { Search } from "~/components/Search";
+import { useAuthContext } from "~/contexts/AuthContext";
 import { PizzaDTO } from "~/DTOs/PizzaDTO";
 import {
   Container,
@@ -30,6 +31,7 @@ export const Home: React.FC = () => {
   const [pizzas, setPizzas] = useState<Pizza[]>([]);
   const unsubscribeRef = useRef<UnsubscribeFn>(null);
   const { navigate } = useNavigation();
+  const { signOut, user } = useAuthContext();
 
   function fetchPizzas(value: string) {
     unsubscribeRef.current?.();
@@ -84,10 +86,10 @@ export const Home: React.FC = () => {
       <Header>
         <Greeting>
           <GreetingEmoji source={happyEmoji} />
-          <GreetingText>Olá, Admin</GreetingText>
+          <GreetingText>Olá, {user!.name}</GreetingText>
         </Greeting>
 
-        <SignOutButton>
+        <SignOutButton onPress={signOut}>
           <MaterialIcons name="logout" size={24} color={colors.title} />
         </SignOutButton>
       </Header>
@@ -121,11 +123,13 @@ export const Home: React.FC = () => {
         }}
       />
 
-      <NewProductButton
-        title="Cadastrar pizza"
-        type="secondary"
-        onPress={handleAddProduct}
-      />
+      {user!.isAdmin && (
+        <NewProductButton
+          title="Cadastrar pizza"
+          type="secondary"
+          onPress={handleAddProduct}
+        />
+      )}
     </Container>
   );
 };
