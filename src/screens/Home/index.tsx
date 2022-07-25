@@ -74,7 +74,8 @@ export const Home: React.FC = () => {
   }
 
   function handleOpenProduct(id: Pizza["id"]) {
-    navigate("product", { id });
+    const route = user!.isAdmin ? "product" : "order";
+    navigate(route, { id });
   }
 
   function handleAddProduct() {
