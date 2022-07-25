@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { BackButton } from "~/components/BackButton";
 import { RadioButton } from "~/components/RadioButton";
+import { PIZZA_SIZES } from "~/utils/pizzaSizes";
 import { Container, Header, Photo, Sizes } from "./styles";
 
 export const Order: React.FC = () => {
+  const [selectedSize, setSelectedSize] = useState("M");
+
   return (
     <Container behavior="position" enabled>
       <Header>
@@ -16,9 +20,14 @@ export const Order: React.FC = () => {
       />
 
       <Sizes>
-        <RadioButton title="Pequena" />
-        <RadioButton title="Média" selected />
-        <RadioButton title="Grande" />
+        {PIZZA_SIZES.map(size => (
+          <RadioButton
+            key={size.id}
+            title={size.title}
+            selected={selectedSize === size.id}
+            onPress={() => setSelectedSize(size.id)}
+          />
+        ))}
       </Sizes>
     </Container>
   );
