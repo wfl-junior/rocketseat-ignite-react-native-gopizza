@@ -1,7 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import firestore from "@react-native-firebase/firestore";
 import { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
+import { FlatList } from "react-native";
 import { useTheme } from "styled-components/native";
 import happyEmoji from "~/assets/happy.png";
 import { ProductCard, ProductData } from "~/components/ProductCard";
@@ -73,11 +73,17 @@ export const Home: React.FC = () => {
         <MenuItemsNumber>10 pizzas</MenuItemsNumber>
       </MenuHeader>
 
-      <ScrollView>
-        {pizzas.map(pizza => (
-          <ProductCard key={pizza.id} data={pizza} />
-        ))}
-      </ScrollView>
+      <FlatList
+        data={pizzas}
+        keyExtractor={pizza => pizza.id}
+        renderItem={({ item: pizza }) => <ProductCard data={pizza} />}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: 20,
+          paddingBottom: 125,
+          marginHorizontal: 24,
+        }}
+      />
     </Container>
   );
 };
