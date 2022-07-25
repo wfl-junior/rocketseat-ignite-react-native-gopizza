@@ -1,6 +1,6 @@
 import firestore from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   launchImageLibraryAsync,
   MediaTypeOptions,
@@ -41,13 +41,14 @@ export interface ProductNavigationParams {
 
 export const Product: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [image, setImage] = useState<string | null>(null);
-  const [imagePath, setImagePath] = useState<string | null>(null);
+  const [image, setImage] = useState("");
+  const [imagePath, setImagePath] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [priceSizeP, setPriceSizeP] = useState("");
   const [priceSizeM, setPriceSizeM] = useState("");
   const [priceSizeG, setPriceSizeG] = useState("");
+  const { navigate } = useNavigation();
   const { params } = useRoute();
   const { id } = params as ProductNavigationParams;
 
@@ -76,6 +77,12 @@ export const Product: React.FC = () => {
         });
     }
   }, [id]);
+
+  async function handleDeleteProduct() {
+    await firestore().collection<PizzaDTO>("pizzas").doc(id).delete();
+    await storage().ref(imagePath).delete();
+    navigate("home");
+  }
 
   async function handlePickImage() {
     const { status } = await requestMediaLibraryPermissionsAsync();
@@ -137,7 +144,7 @@ export const Product: React.FC = () => {
           imagePath: reference.fullPath,
         });
 
-      setImage(null);
+      setImage("");
       setName("");
       setDescription("");
       setPriceSizeP("");
@@ -162,7 +169,7 @@ export const Product: React.FC = () => {
           <Title>Cadastrar</Title>
 
           {id ? (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleDeleteProduct}>
               <DeleteLabel>Deletar</DeleteLabel>
             </TouchableOpacity>
           ) : (
