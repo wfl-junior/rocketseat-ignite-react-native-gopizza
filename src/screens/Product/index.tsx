@@ -30,7 +30,13 @@ import {
 } from "./styles";
 
 export const Product: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [priceSizeP, setPriceSizeP] = useState("");
+  const [priceSizeM, setPriceSizeM] = useState("");
+  const [priceSizeG, setPriceSizeG] = useState("");
 
   async function handlePickImage() {
     const { status } = await requestMediaLibraryPermissionsAsync();
@@ -74,7 +80,7 @@ export const Product: React.FC = () => {
           <InputGroup>
             <Label>Nome</Label>
 
-            <Input />
+            <Input value={name} onChangeText={setName} />
           </InputGroup>
 
           <InputGroup>
@@ -83,18 +89,38 @@ export const Product: React.FC = () => {
               <MaxCharacters>0 de 60 caracteres</MaxCharacters>
             </InputGroupHeader>
 
-            <Input multiline maxLength={60} style={{ height: 80 }} />
+            <Input
+              multiline
+              maxLength={60}
+              style={{ height: 80 }}
+              value={description}
+              onChangeText={setDescription}
+            />
           </InputGroup>
 
           <InputGroup>
             <Label>Tamanhos e preços</Label>
 
-            <PriceInput size="P" />
-            <PriceInput size="M" />
-            <PriceInput size="G" />
+            <PriceInput
+              size="P"
+              value={priceSizeP}
+              onChangeText={setPriceSizeP}
+            />
+
+            <PriceInput
+              size="M"
+              value={priceSizeM}
+              onChangeText={setPriceSizeM}
+            />
+
+            <PriceInput
+              size="G"
+              value={priceSizeG}
+              onChangeText={setPriceSizeG}
+            />
           </InputGroup>
 
-          <Button title="Cadastrar pizza" />
+          <Button title="Cadastrar pizza" isLoading={isLoading} />
         </Form>
       </Container>
     </TouchableWithoutFeedback>
