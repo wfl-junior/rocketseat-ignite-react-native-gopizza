@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ScrollView } from "react-native";
 import { BackButton } from "~/components/BackButton";
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
@@ -23,7 +22,7 @@ export const Order: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState("M");
 
   return (
-    <Container behavior="position" enabled>
+    <Container>
       <Content>
         <Header>
           <BackButton />
