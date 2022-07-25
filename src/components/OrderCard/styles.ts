@@ -24,9 +24,9 @@ export const Container = styled(TouchableOpacity)<ContainerProps>`
 `;
 
 export const Image = styled.Image`
-  width: 140px;
-  height: 140px;
-  border-radius: 70px;
+  width: 104px;
+  height: 104px;
+  border-radius: 52px;
 `;
 
 export const Name = styled.Text`
