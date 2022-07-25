@@ -144,19 +144,11 @@ export const Product: React.FC = () => {
           imagePath: reference.fullPath,
         });
 
-      setImage("");
-      setName("");
-      setDescription("");
-      setPriceSizeP("");
-      setPriceSizeM("");
-      setPriceSizeG("");
-
-      Alert.alert("Cadastro", "Pizza cadastrada com sucesso.");
+      navigate("home");
     } catch (error) {
+      setIsLoading(false);
       console.warn(error);
       Alert.alert("Cadastro", "Não foi possível cadastrar a pizza.");
-    } finally {
-      setIsLoading(false);
     }
   }
 

@@ -116,8 +116,7 @@ export const Home: React.FC = () => {
           />
         )}
         contentContainerStyle={{
-          paddingTop: 20,
-          paddingBottom: 125,
+          paddingVertical: 20,
           marginHorizontal: 24,
         }}
       />
