@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import firestore from "@react-native-firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FlatList } from "react-native";
 import { useTheme } from "styled-components/native";
 import happyEmoji from "~/assets/happy.png";
@@ -19,12 +19,17 @@ import {
   Title,
 } from "./styles";
 
+type Pizza = PizzaDTO & ProductData;
+type UnsubscribeFn = () => void;
+
 export const Home: React.FC = () => {
   const { colors } = useTheme();
   const [search, setSearch] = useState("");
-  const [pizzas, setPizzas] = useState<ProductData[]>([]);
+  const [pizzas, setPizzas] = useState<Pizza[]>([]);
+  const unsubscribeRef = useRef<UnsubscribeFn>(null);
 
   function fetchPizzas(value: string) {
+    unsubscribeRef.current?.();
     const formattedValue = value.toLowerCase().trim();
 
     const unsubscribe = firestore()
@@ -33,20 +38,35 @@ export const Home: React.FC = () => {
       .startAt(formattedValue)
       .endAt(`${formattedValue}\uf8ff`)
       .onSnapshot(snapshot => {
-        const data = snapshot.docs.map(document => ({
-          id: document.id,
-          ...document.data(),
-        }));
+        const data = snapshot.docs.map(
+          (document): Pizza => ({
+            id: document.id,
+            ...document.data(),
+          }),
+        );
 
         setPizzas(data);
       }, console.warn);
+
+    // @ts-ignore
+    unsubscribeRef.current = unsubscribe;
 
     return unsubscribe;
   }
 
   useEffect(() => {
-    return fetchPizzas("");
+    const unsubscribe = fetchPizzas("");
+    return unsubscribe;
   }, []);
+
+  function handleSearch() {
+    fetchPizzas(search);
+  }
+
+  function handleClearSearch() {
+    setSearch("");
+    fetchPizzas("");
+  }
 
   return (
     <Container>
@@ -62,15 +82,16 @@ export const Home: React.FC = () => {
       </Header>
 
       <Search
-        onSearch={() => {}}
-        onClear={() => {}}
+        onSearch={handleSearch}
+        onClear={handleClearSearch}
         value={search}
         onChangeText={setSearch}
+        onSubmitEditing={handleSearch}
       />
 
       <MenuHeader>
         <Title>Cardápio</Title>
-        <MenuItemsNumber>10 pizzas</MenuItemsNumber>
+        <MenuItemsNumber>{pizzas.length} pizzas</MenuItemsNumber>
       </MenuHeader>
 
       <FlatList

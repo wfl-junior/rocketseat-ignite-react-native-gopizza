@@ -34,7 +34,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ data, ...props }) => {
           <Identification>
             <Name>{data.name}</Name>
 
-            <Feather name="chevron-right" size={18} color={colors.shape} />
+            <Feather
+              name="chevron-right"
+              size={18}
+              color={colors.secondary[900]}
+            />
           </Identification>
 
           <Description>{data.description}</Description>
