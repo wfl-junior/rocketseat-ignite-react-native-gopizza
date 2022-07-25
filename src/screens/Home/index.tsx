@@ -1,8 +1,12 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import firestore from "@react-native-firebase/firestore";
+import { useEffect, useState } from "react";
+import { ScrollView } from "react-native";
 import { useTheme } from "styled-components/native";
 import happyEmoji from "~/assets/happy.png";
-import { ProductCard } from "~/components/ProductCard";
+import { ProductCard, ProductData } from "~/components/ProductCard";
 import { Search } from "~/components/Search";
+import { PizzaDTO } from "~/DTOs/PizzaDTO";
 import {
   Container,
   Greeting,
@@ -17,6 +21,32 @@ import {
 
 export const Home: React.FC = () => {
   const { colors } = useTheme();
+  const [search, setSearch] = useState("");
+  const [pizzas, setPizzas] = useState<ProductData[]>([]);
+
+  function fetchPizzas(value: string) {
+    const formattedValue = value.toLowerCase().trim();
+
+    const unsubscribe = firestore()
+      .collection<PizzaDTO>("pizzas")
+      .orderBy("nameInsensitive")
+      .startAt(formattedValue)
+      .endAt(`${formattedValue}\uf8ff`)
+      .onSnapshot(snapshot => {
+        const data = snapshot.docs.map(document => ({
+          id: document.id,
+          ...document.data(),
+        }));
+
+        setPizzas(data);
+      }, console.warn);
+
+    return unsubscribe;
+  }
+
+  useEffect(() => {
+    return fetchPizzas("");
+  }, []);
 
   return (
     <Container>
@@ -31,22 +61,23 @@ export const Home: React.FC = () => {
         </SignOutButton>
       </Header>
 
-      <Search onSearch={() => {}} onClear={() => {}} />
+      <Search
+        onSearch={() => {}}
+        onClear={() => {}}
+        value={search}
+        onChangeText={setSearch}
+      />
 
       <MenuHeader>
         <Title>Cardápio</Title>
         <MenuItemsNumber>10 pizzas</MenuItemsNumber>
       </MenuHeader>
 
-      <ProductCard
-        data={{
-          id: "1",
-          name: "Margherita",
-          description: "Mussarela, manjericão fresco,parmesão e tomate.",
-          imageUrl:
-            "https://firebasestorage.googleapis.com/v0/b/gopizza-744b6.appspot.com/o/pizzas%2F1658763880596.png?alt=media&token=eec6feb2-1efe-47bd-ac83-d9d07885b0ce",
-        }}
-      />
+      <ScrollView>
+        {pizzas.map(pizza => (
+          <ProductCard key={pizza.id} data={pizza} />
+        ))}
+      </ScrollView>
     </Container>
   );
 };
