@@ -6,9 +6,9 @@ import { Fragment, useCallback, useEffect, useState } from "react";
 import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ThemeProvider } from "styled-components/native";
+import { AuthContextProvider } from "~/contexts/AuthContext";
+import { Product } from "~/screens/Product";
 import { theme } from "~/theme";
-import { AuthContextProvider } from "./contexts/AuthContext";
-import { Product } from "./screens/Product";
 
 export const App: React.FC = () => {
   const [appIsReady, setAppIsReady] = useState(false);

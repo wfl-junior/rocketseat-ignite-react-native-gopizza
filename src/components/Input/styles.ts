@@ -16,7 +16,6 @@ export const Container = styled(TextInput).attrs<ContainerProps>(
 )<ContainerProps>`
   width: 100%;
   height: 56px;
-  background-color: transparent;
   border-radius: 12px;
   font-size: 14px;
   padding: 7px 0;
@@ -29,5 +28,12 @@ export const Container = styled(TextInput).attrs<ContainerProps>(
     color: ${type === "primary"
       ? theme.colors.secondary[900]
       : theme.colors.title};
+
+    background-color: ${() => {
+      if (type === "primary") {
+        return theme.colors.title;
+      }
+      return "transparent";
+    }};
   `}
 `;

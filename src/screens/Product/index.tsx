@@ -7,17 +7,23 @@ import {
 import { useState } from "react";
 import {
   Keyboard,
-  KeyboardAvoidingView,
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
 import { BackButton } from "~/components/BackButton";
+import { Button } from "~/components/Button";
+import { Input } from "~/components/Input";
 import { Photo } from "~/components/Photo";
 import { PriceInput } from "~/components/PriceInput";
 import {
   Container,
   DeleteLabel,
+  Form,
   Header,
+  InputGroup,
+  InputGroupHeader,
+  Label,
+  MaxCharacters,
   PickImageButton,
   Title,
   Upload,
@@ -42,33 +48,54 @@ export const Product: React.FC = () => {
   }
 
   return (
-    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container>
-        <KeyboardAvoidingView behavior="position" enabled>
-          <Header>
-            <BackButton />
+        <Header>
+          <BackButton />
 
-            <Title>Cadastrar</Title>
+          <Title>Cadastrar</Title>
 
-            <TouchableOpacity>
-              <DeleteLabel>Deletar</DeleteLabel>
-            </TouchableOpacity>
-          </Header>
+          <TouchableOpacity>
+            <DeleteLabel>Deletar</DeleteLabel>
+          </TouchableOpacity>
+        </Header>
 
-          <Upload>
-            <Photo uri={image} />
+        <Upload>
+          <Photo uri={image} />
 
-            <PickImageButton
-              title="Carregar"
-              type="secondary"
-              onPress={handlePickImage}
-            />
-          </Upload>
+          <PickImageButton
+            title="Carregar"
+            type="secondary"
+            onPress={handlePickImage}
+          />
+        </Upload>
 
-          <PriceInput size="P" />
-          <PriceInput size="M" />
-          <PriceInput size="G" />
-        </KeyboardAvoidingView>
+        <Form>
+          <InputGroup>
+            <Label>Nome</Label>
+
+            <Input />
+          </InputGroup>
+
+          <InputGroup>
+            <InputGroupHeader>
+              <Label>Descrição</Label>
+              <MaxCharacters>0 de 60 caracteres</MaxCharacters>
+            </InputGroupHeader>
+
+            <Input multiline maxLength={60} style={{ height: 80 }} />
+          </InputGroup>
+
+          <InputGroup>
+            <Label>Tamanhos e preços</Label>
+
+            <PriceInput size="P" />
+            <PriceInput size="M" />
+            <PriceInput size="G" />
+          </InputGroup>
+
+          <Button title="Cadastrar pizza" />
+        </Form>
       </Container>
     </TouchableWithoutFeedback>
   );

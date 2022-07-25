@@ -12,7 +12,11 @@ export const Placeholder = styled.View`
   border-radius: 80px;
   align-items: center;
   justify-content: center;
-  border: 1px dashed ${({ theme }) => theme.colors.secondary[900]};
+
+  ${({ theme }) => css`
+    border: 1px dashed ${theme.colors.secondary[900]};
+    background-color: ${theme.colors.title};
+  `};
 `;
 
 export const PlaceholderTitle = styled.Text`

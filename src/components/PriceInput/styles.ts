@@ -4,11 +4,15 @@ import styled, { css } from "styled-components/native";
 export const Container = styled.View`
   width: 100%;
   height: 56px;
-  border: 1px solid ${({ theme }) => theme.colors.shape};
   border-radius: 12px;
   margin-bottom: 8px;
   flex-direction: row;
   align-items: center;
+
+  ${({ theme }) => css`
+    border: 1px solid ${theme.colors.shape};
+    background-color: ${theme.colors.title};
+  `};
 `;
 
 export const Size = styled.View`
