@@ -1,6 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "styled-components/native";
 import happyEmoji from "~/assets/happy.png";
+import { Search } from "~/components/Search";
 import {
   Container,
   Greeting,
@@ -25,6 +26,8 @@ export const Home: React.FC = () => {
           <MaterialIcons name="logout" size={24} color={colors.title} />
         </SignOutButton>
       </Header>
+
+      <Search onSearch={() => {}} onClear={() => {}} />
     </Container>
   );
 };
