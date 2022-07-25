@@ -1,10 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { Orders } from "~/screens/Orders";
+import { UserTabRoutes } from "./user.tab.routes";
 
 export const Routes: React.FC = () => {
   return (
     <NavigationContainer>
-      <Orders />
+      <UserTabRoutes />
     </NavigationContainer>
   );
 };
