@@ -16,6 +16,7 @@ import {
   Header,
   MenuHeader,
   MenuItemsNumber,
+  NewProductButton,
   SignOutButton,
   Title,
 } from "./styles";
@@ -70,8 +71,12 @@ export const Home: React.FC = () => {
     fetchPizzas("");
   }
 
-  function handleOpen(id: Pizza["id"]) {
+  function handleOpenProduct(id: Pizza["id"]) {
     navigate("product", { id });
+  }
+
+  function handleAddProduct() {
+    navigate("product", {});
   }
 
   return (
@@ -105,13 +110,22 @@ export const Home: React.FC = () => {
         keyExtractor={pizza => pizza.id}
         showsVerticalScrollIndicator={false}
         renderItem={({ item: pizza }) => (
-          <ProductCard data={pizza} onPress={() => handleOpen(pizza.id)} />
+          <ProductCard
+            data={pizza}
+            onPress={() => handleOpenProduct(pizza.id)}
+          />
         )}
         contentContainerStyle={{
           paddingTop: 20,
           paddingBottom: 125,
           marginHorizontal: 24,
         }}
+      />
+
+      <NewProductButton
+        title="Cadastrar pizza"
+        type="secondary"
+        onPress={handleAddProduct}
       />
     </Container>
   );

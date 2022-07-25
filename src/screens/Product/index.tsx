@@ -13,6 +13,7 @@ import {
   Keyboard,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  View,
 } from "react-native";
 import { BackButton } from "~/components/BackButton";
 import { Button } from "~/components/Button";
@@ -160,19 +161,25 @@ export const Product: React.FC = () => {
 
           <Title>Cadastrar</Title>
 
-          <TouchableOpacity>
-            <DeleteLabel>Deletar</DeleteLabel>
-          </TouchableOpacity>
+          {id ? (
+            <TouchableOpacity>
+              <DeleteLabel>Deletar</DeleteLabel>
+            </TouchableOpacity>
+          ) : (
+            <View style={{ width: 47.3 }} />
+          )}
         </Header>
 
         <Upload>
           <Photo uri={image} />
 
-          <PickImageButton
-            title="Carregar"
-            type="secondary"
-            onPress={handlePickImage}
-          />
+          {!id && (
+            <PickImageButton
+              title="Carregar"
+              type="secondary"
+              onPress={handlePickImage}
+            />
+          )}
         </Upload>
 
         <Form>
@@ -222,11 +229,13 @@ export const Product: React.FC = () => {
             />
           </InputGroup>
 
-          <Button
-            title="Cadastrar pizza"
-            isLoading={isLoading}
-            onPress={handleAddProduct}
-          />
+          {!id && (
+            <Button
+              title="Cadastrar pizza"
+              isLoading={isLoading}
+              onPress={handleAddProduct}
+            />
+          )}
         </Form>
       </Container>
     </TouchableWithoutFeedback>
