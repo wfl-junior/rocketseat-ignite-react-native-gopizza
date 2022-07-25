@@ -22,3 +22,11 @@ export const Photo = styled.Image`
   align-self: center;
   margin-top: -120px;
 `;
+
+export const Sizes = styled.View`
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+`;
