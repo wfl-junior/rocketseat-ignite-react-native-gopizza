@@ -1,10 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { UserStackRoutes } from "./user.stack.routes";
+import { Order } from "~/screens/Order";
 
 export const Routes: React.FC = () => {
   return (
     <NavigationContainer>
-      <UserStackRoutes />
+      <Order />
     </NavigationContainer>
   );
 };

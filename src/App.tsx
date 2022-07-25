@@ -7,7 +7,7 @@ import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ThemeProvider } from "styled-components/native";
 import { AuthContextProvider } from "~/contexts/AuthContext";
-import { Order } from "~/screens/Order";
+import { Routes } from "~/routes";
 import { theme } from "~/theme";
 
 export const App: React.FC = () => {
@@ -63,7 +63,7 @@ export const App: React.FC = () => {
             onLayout={handleLayoutRootView}
             style={{ flex: 1 }}
           >
-            <Order />
+            <Routes />
           </GestureHandlerRootView>
         </AuthContextProvider>
       </ThemeProvider>
