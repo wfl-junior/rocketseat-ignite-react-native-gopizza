@@ -1,5 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import firestore from "@react-native-firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
 import { FlatList } from "react-native";
 import { useTheme } from "styled-components/native";
@@ -27,6 +28,7 @@ export const Home: React.FC = () => {
   const [search, setSearch] = useState("");
   const [pizzas, setPizzas] = useState<Pizza[]>([]);
   const unsubscribeRef = useRef<UnsubscribeFn>(null);
+  const { navigate } = useNavigation();
 
   function fetchPizzas(value: string) {
     unsubscribeRef.current?.();
@@ -68,6 +70,10 @@ export const Home: React.FC = () => {
     fetchPizzas("");
   }
 
+  function handleOpen(id: Pizza["id"]) {
+    navigate("product", { id });
+  }
+
   return (
     <Container>
       <Header>
@@ -97,8 +103,10 @@ export const Home: React.FC = () => {
       <FlatList
         data={pizzas}
         keyExtractor={pizza => pizza.id}
-        renderItem={({ item: pizza }) => <ProductCard data={pizza} />}
         showsVerticalScrollIndicator={false}
+        renderItem={({ item: pizza }) => (
+          <ProductCard data={pizza} onPress={() => handleOpen(pizza.id)} />
+        )}
         contentContainerStyle={{
           paddingTop: 20,
           paddingBottom: 125,

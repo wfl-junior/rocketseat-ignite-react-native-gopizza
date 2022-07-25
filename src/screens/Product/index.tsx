@@ -1,5 +1,6 @@
 import firestore from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
+import { useRoute } from "@react-navigation/native";
 import {
   launchImageLibraryAsync,
   MediaTypeOptions,
@@ -33,6 +34,10 @@ import {
   Upload,
 } from "./styles";
 
+export interface ProductNavigationParams {
+  id?: string;
+}
+
 export const Product: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState<string | null>(null);
@@ -41,6 +46,10 @@ export const Product: React.FC = () => {
   const [priceSizeP, setPriceSizeP] = useState("");
   const [priceSizeM, setPriceSizeM] = useState("");
   const [priceSizeG, setPriceSizeG] = useState("");
+  const { params } = useRoute();
+  const { id } = params as ProductNavigationParams;
+
+  console.log({ id });
 
   async function handlePickImage() {
     const { status } = await requestMediaLibraryPermissionsAsync();

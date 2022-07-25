@@ -1,6 +1,4 @@
-export interface ProductNavigationParams {
-  id?: string;
-}
+import { ProductNavigationParams } from "~/screens/Product";
 
 export interface OrderNavigationParams {
   id: string;
