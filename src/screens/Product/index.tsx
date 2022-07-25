@@ -6,6 +6,7 @@ import {
 } from "expo-image-picker";
 import { useState } from "react";
 import {
+  Alert,
   Keyboard,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -50,6 +51,27 @@ export const Product: React.FC = () => {
       if (!result.cancelled) {
         setImage(result.uri);
       }
+    }
+  }
+
+  async function handleAddProduct() {
+    if (!name.trim()) {
+      return Alert.alert("Cadastro", "Informe o nome da pizza.");
+    }
+
+    if (!description.trim()) {
+      return Alert.alert("Cadastro", "Informe a descrição da pizza.");
+    }
+
+    if (!image) {
+      return Alert.alert("Cadastro", "Selecione a imagem da pizza.");
+    }
+
+    if (!priceSizeP.trim() || !priceSizeM.trim() || !priceSizeG.trim()) {
+      return Alert.alert(
+        "Cadastro",
+        "Informe o preço de todos os tamanhos da pizza.",
+      );
     }
   }
 
@@ -120,7 +142,11 @@ export const Product: React.FC = () => {
             />
           </InputGroup>
 
-          <Button title="Cadastrar pizza" isLoading={isLoading} />
+          <Button
+            title="Cadastrar pizza"
+            isLoading={isLoading}
+            onPress={handleAddProduct}
+          />
         </Form>
       </Container>
     </TouchableWithoutFeedback>
