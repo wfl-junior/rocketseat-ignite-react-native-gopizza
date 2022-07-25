@@ -7,7 +7,7 @@ import {
   PermissionStatus,
   requestMediaLibraryPermissionsAsync,
 } from "expo-image-picker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Keyboard,
@@ -41,6 +41,7 @@ export interface ProductNavigationParams {
 export const Product: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState<string | null>(null);
+  const [imagePath, setImagePath] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [priceSizeP, setPriceSizeP] = useState("");
@@ -49,7 +50,31 @@ export const Product: React.FC = () => {
   const { params } = useRoute();
   const { id } = params as ProductNavigationParams;
 
-  console.log({ id });
+  useEffect(() => {
+    if (id) {
+      firestore()
+        .collection<PizzaDTO>("pizzas")
+        .doc(id)
+        .get()
+        .then(document => {
+          const data = document.data();
+
+          if (data) {
+            setImage(data.imageUrl);
+            setImagePath(data.imagePath);
+            setName(data.name);
+            setDescription(data.description);
+            setPriceSizeP(data.prices.P);
+            setPriceSizeM(data.prices.M);
+            setPriceSizeG(data.prices.G);
+          }
+        })
+        .catch(error => {
+          console.warn(error);
+          Alert.alert("Pizza", "Não foi possível buscar os dados da pizza.");
+        });
+    }
+  }, [id]);
 
   async function handlePickImage() {
     const { status } = await requestMediaLibraryPermissionsAsync();
@@ -160,7 +185,10 @@ export const Product: React.FC = () => {
           <InputGroup>
             <InputGroupHeader>
               <Label>Descrição</Label>
-              <MaxCharacters>0 de 60 caracteres</MaxCharacters>
+
+              <MaxCharacters>
+                {description.length} de 60 caracteres
+              </MaxCharacters>
             </InputGroupHeader>
 
             <Input
