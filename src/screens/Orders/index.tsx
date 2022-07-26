@@ -17,6 +17,8 @@ export const Orders: React.FC = () => {
   const [orders, setOrders] = useState<OrderState[]>([]);
   const { user } = useAuthContext();
 
+  const userId = user!.id;
+
   useEffect(() => {
     const unsubscribe = firestore()
       .collection<OrderDTO>("orders")
@@ -34,7 +36,7 @@ export const Orders: React.FC = () => {
       }, console.warn);
 
     return unsubscribe;
-  }, [user!.id]);
+  }, [userId]);
 
   function handleDeliverPizza(id: OrderState["id"]) {
     Alert.alert("Pedido", "Confirmar que a pizza foi entregue?", [
@@ -73,7 +75,7 @@ export const Orders: React.FC = () => {
             <OrderCard
               index={index}
               data={order}
-              disabled={order.status !== "Preparando"}
+              disabled={order.status !== "Pronto"}
               onPress={() => handleDeliverPizza(order.id)}
             />
           )}
