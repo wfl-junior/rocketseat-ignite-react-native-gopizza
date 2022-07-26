@@ -1,12 +1,14 @@
 import firestore from "@react-native-firebase/firestore";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import { BackButton } from "~/components/BackButton";
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
 import { Loading } from "~/components/Loading";
 import { RadioButton } from "~/components/RadioButton";
+import { useAuthContext } from "~/contexts/AuthContext";
+import { OrderDTO } from "~/DTOs/OrderDTO";
 import { PizzaDTO } from "~/DTOs/PizzaDTO";
 import { formatPrice } from "~/utils/formatPrice";
 import { PIZZA_SIZES } from "~/utils/pizzaSizes";
@@ -30,12 +32,15 @@ export interface OrderNavigationParams {
 }
 
 export const Order: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isPizzaLoading, setIsPizzaLoading] = useState(true);
+  const [isSendingOrder, setIsSendingOrder] = useState(false);
   const [pizza, setPizza] = useState<PizzaDTO | null>(null);
   const [selectedSize, setSelectedSize] =
     useState<keyof PizzaDTO["prices"]>("M");
   const [tableNumber, setTableNumber] = useState("");
   const [quantity, setQuantity] = useState("");
+  const { user } = useAuthContext();
+  const { navigate } = useNavigation();
   const { params } = useRoute();
   const { id } = params as OrderNavigationParams;
 
@@ -59,8 +64,46 @@ export const Order: React.FC = () => {
         setPizza(data);
       })
       .catch(console.warn)
-      .finally(() => setIsLoading(false));
+      .finally(() => setIsPizzaLoading(false));
   }, [id]);
+
+  async function handleOrder() {
+    if (!selectedSize) {
+      return Alert.alert("Pedido", "Selecione o tamanho da pizza.");
+    }
+
+    if (!tableNumber) {
+      return Alert.alert("Pedido", "Informe o número da mesa.");
+    }
+
+    if (!quantity) {
+      return Alert.alert("Pedido", "Informe a quantidade.");
+    }
+
+    setIsSendingOrder(true);
+
+    try {
+      await firestore()
+        .collection<OrderDTO>("orders")
+        .add({
+          quantity,
+          amount: amount.replace("R$", ""),
+          size: selectedSize,
+          status: "Preparando",
+          waiterId: user!.id,
+          pizza: {
+            name: pizza!.name,
+            imageUrl: pizza!.imageUrl,
+          },
+        });
+
+      navigate("home");
+    } catch (error) {
+      console.warn(error);
+      setIsSendingOrder(false);
+      Alert.alert("Pedido", "Não foi possível concluir o pedido.");
+    }
+  }
 
   return (
     <Container>
@@ -69,7 +112,7 @@ export const Order: React.FC = () => {
           <BackButton />
         </Header>
 
-        {isLoading ? (
+        {isPizzaLoading ? (
           <View style={{ flex: 1, marginTop: 24 }}>
             <Loading />
           </View>
@@ -116,7 +159,11 @@ export const Order: React.FC = () => {
 
               <Price>Total: {amount}</Price>
 
-              <Button title="Confirmar pedido" />
+              <Button
+                title="Confirmar pedido"
+                onPress={handleOrder}
+                isLoading={isSendingOrder}
+              />
             </Form>
           </Fragment>
         ) : (
