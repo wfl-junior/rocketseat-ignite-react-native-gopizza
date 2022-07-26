@@ -1,4 +1,6 @@
-import firestore from "@react-native-firebase/firestore";
+import firestore, {
+  FirebaseFirestoreTypes,
+} from "@react-native-firebase/firestore";
 import { useEffect, useState } from "react";
 import { Alert, FlatList } from "react-native";
 import { ItemSeparator } from "~/components/ItemSeparator";
@@ -18,41 +20,61 @@ export const Orders: React.FC = () => {
   const { user } = useAuthContext();
 
   const userId = user!.id;
+  const isAdmin = user!.isAdmin;
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection<OrderDTO>("orders")
-      .where("waiterId", "==", user!.id)
-      .onSnapshot(snapshot => {
-        const data = snapshot.docs.map(
-          (document): OrderState => ({
-            id: document.id,
-            ...document.data(),
-          }),
-        );
+    let query:
+      | FirebaseFirestoreTypes.CollectionReference<OrderDTO>
+      | FirebaseFirestoreTypes.Query<OrderDTO> =
+      firestore().collection<OrderDTO>("orders");
 
-        setOrders(data);
-        setIsLoading(false);
-      }, console.warn);
+    if (!isAdmin) {
+      query = query.where("waiterId", "==", userId);
+    }
+
+    const unsubscribe = query.onSnapshot(snapshot => {
+      const data = snapshot.docs.map(
+        (document): OrderState => ({
+          id: document.id,
+          ...document.data(),
+        }),
+      );
+
+      setOrders(data);
+      setIsLoading(false);
+    }, console.warn);
 
     return unsubscribe;
-  }, [userId]);
+  }, [userId, isAdmin]);
 
-  function handleDeliverPizza(id: OrderState["id"]) {
-    Alert.alert("Pedido", "Confirmar que a pizza foi entregue?", [
-      {
-        text: "Não",
-        style: "cancel",
-      },
-      {
-        text: "Sim",
-        onPress: async () => {
-          firestore().collection<OrderDTO>("orders").doc(id).update({
-            status: "Entregue",
-          });
+  function handleChangePizzaStatus(id: OrderState["id"]) {
+    Alert.alert(
+      "Pedido",
+      `Confirmar que a pizza ${isAdmin ? "está pronta" : "foi entregue"}?`,
+      [
+        {
+          text: "Não",
+          style: "cancel",
         },
-      },
-    ]);
+        {
+          text: "Sim",
+          onPress: () => {
+            firestore()
+              .collection<OrderDTO>("orders")
+              .doc(id)
+              .update({ status: isAdmin ? "Pronto" : "Entregue" })
+              .catch(error => {
+                console.warn(error);
+
+                Alert.alert(
+                  "Pedido",
+                  "Não foi possível atualizar o status do pedido.",
+                );
+              });
+          },
+        },
+      ],
+    );
   }
 
   return (
@@ -75,8 +97,12 @@ export const Orders: React.FC = () => {
             <OrderCard
               index={index}
               data={order}
-              disabled={order.status !== "Pronto"}
-              onPress={() => handleDeliverPizza(order.id)}
+              onPress={() => handleChangePizzaStatus(order.id)}
+              disabled={
+                isAdmin
+                  ? order.status !== "Preparando"
+                  : order.status !== "Pronto"
+              }
             />
           )}
         />

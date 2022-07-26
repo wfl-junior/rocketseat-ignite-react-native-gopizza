@@ -17,18 +17,23 @@ export const UserTabRoutes: React.FC = () => {
   const { user } = useAuthContext();
 
   const userId = user!.id;
+  const isAdmin = user!.isAdmin;
 
   useEffect(() => {
-    const unsubscribe = firestore()
+    let query = firestore()
       .collection<OrderDTO>("orders")
-      .where("status", "==", "Pronto")
-      .where("waiterId", "==", userId)
-      .onSnapshot(snapshot => {
-        setNotifications(snapshot.docs.length.toString());
-      }, console.warn);
+      .where("status", "==", isAdmin ? "Preparando" : "Pronto");
+
+    if (!isAdmin) {
+      query = query.where("waiterId", "==", userId);
+    }
+
+    const unsubscribe = query.onSnapshot(snapshot => {
+      setNotifications(snapshot.docs.length.toString());
+    }, console.warn);
 
     return unsubscribe;
-  }, [userId]);
+  }, [userId, isAdmin]);
 
   return (
     <Navigator
