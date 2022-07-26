@@ -1,6 +1,6 @@
 import firestore from "@react-native-firebase/firestore";
 import { useRoute } from "@react-navigation/native";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 import { BackButton } from "~/components/BackButton";
 import { Button } from "~/components/Button";
@@ -8,6 +8,7 @@ import { Input } from "~/components/Input";
 import { Loading } from "~/components/Loading";
 import { RadioButton } from "~/components/RadioButton";
 import { PizzaDTO } from "~/DTOs/PizzaDTO";
+import { formatPrice } from "~/utils/formatPrice";
 import { PIZZA_SIZES } from "~/utils/pizzaSizes";
 import {
   Container,
@@ -31,9 +32,22 @@ export interface OrderNavigationParams {
 export const Order: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [pizza, setPizza] = useState<PizzaDTO | null>(null);
-  const [selectedSize, setSelectedSize] = useState("M");
+  const [selectedSize, setSelectedSize] =
+    useState<keyof PizzaDTO["prices"]>("M");
+  const [tableNumber, setTableNumber] = useState("");
+  const [quantity, setQuantity] = useState("");
   const { params } = useRoute();
   const { id } = params as OrderNavigationParams;
+
+  const amount = useMemo((): string => {
+    let amount = 0;
+
+    if (pizza) {
+      amount = Number(pizza.prices[selectedSize]) * Number(quantity);
+    }
+
+    return formatPrice(amount);
+  }, [pizza, selectedSize, quantity]);
 
   useEffect(() => {
     firestore()
@@ -81,16 +95,26 @@ export const Order: React.FC = () => {
               <FormRow>
                 <InputGroup>
                   <Label>Número da mesa</Label>
-                  <Input keyboardType="numeric" />
+
+                  <Input
+                    keyboardType="numeric"
+                    value={tableNumber}
+                    onChangeText={setTableNumber}
+                  />
                 </InputGroup>
 
                 <InputGroup>
                   <Label>Quantidade</Label>
-                  <Input keyboardType="numeric" />
+
+                  <Input
+                    keyboardType="numeric"
+                    value={quantity}
+                    onChangeText={setQuantity}
+                  />
                 </InputGroup>
               </FormRow>
 
-              <Price>Total: R$10,00</Price>
+              <Price>Total: {amount}</Price>
 
               <Button title="Confirmar pedido" />
             </Form>

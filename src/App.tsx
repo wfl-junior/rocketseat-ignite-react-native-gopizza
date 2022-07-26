@@ -1,3 +1,6 @@
+import "intl";
+import "intl/locale-data/jsonp/pt-BR";
+
 import { DMSans_400Regular } from "@expo-google-fonts/dm-sans";
 import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display";
 import { loadAsync } from "expo-font";
