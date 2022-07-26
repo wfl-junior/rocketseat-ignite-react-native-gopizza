@@ -43,6 +43,8 @@ export const Product: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState("");
   const [imagePath, setImagePath] = useState("");
+  const [shouldDeletePreviousImage, setShouldDeletePreviousImage] =
+    useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [priceSizeP, setPriceSizeP] = useState("");
@@ -95,11 +97,12 @@ export const Product: React.FC = () => {
 
       if (!result.cancelled) {
         setImage(result.uri);
+        setShouldDeletePreviousImage(true);
       }
     }
   }
 
-  async function handleAddProduct() {
+  async function handleAddOrUpdateProduct() {
     if (!name.trim()) {
       return Alert.alert("Cadastro", "Informe o nome da pizza.");
     }
@@ -108,7 +111,7 @@ export const Product: React.FC = () => {
       return Alert.alert("Cadastro", "Informe a descrição da pizza.");
     }
 
-    if (!image) {
+    if (!image.trim()) {
       return Alert.alert("Cadastro", "Selecione a imagem da pizza.");
     }
 
@@ -124,14 +127,43 @@ export const Product: React.FC = () => {
     try {
       const fileName = Date.now();
       const fileExtension = image.split(".").pop() || "png";
-      const reference = storage().ref(`/pizzas/${fileName}.${fileExtension}`);
+      const imageReference = storage().ref(
+        `/pizzas/${fileName}.${fileExtension}`,
+      );
 
-      await reference.putFile(image);
-      const imageUrl = await reference.getDownloadURL();
+      const pizzaCollection = firestore().collection<PizzaDTO>("pizzas");
 
-      await firestore()
-        .collection<PizzaDTO>("pizzas")
-        .add({
+      if (id) {
+        let newImageUrl = image;
+        let newImagePath = imagePath;
+
+        if (shouldDeletePreviousImage) {
+          await Promise.all([
+            imageReference.putFile(image),
+            storage().ref(imagePath).delete(),
+          ]);
+
+          newImageUrl = await imageReference.getDownloadURL();
+          newImagePath = imageReference.fullPath;
+        }
+
+        await pizzaCollection.doc(id).update({
+          name,
+          nameInsensitive: name.toLowerCase().trim(),
+          description,
+          prices: {
+            P: priceSizeP,
+            M: priceSizeM,
+            G: priceSizeG,
+          },
+          imageUrl: newImageUrl,
+          imagePath: newImagePath,
+        });
+      } else {
+        await imageReference.putFile(image);
+        const imageUrl = await imageReference.getDownloadURL();
+
+        await pizzaCollection.add({
           name,
           nameInsensitive: name.toLowerCase().trim(),
           description,
@@ -141,14 +173,19 @@ export const Product: React.FC = () => {
             G: priceSizeG,
           },
           imageUrl,
-          imagePath: reference.fullPath,
+          imagePath: imageReference.fullPath,
         });
+      }
 
       navigate("home");
     } catch (error) {
-      setIsLoading(false);
       console.warn(error);
-      Alert.alert("Cadastro", "Não foi possível cadastrar a pizza.");
+      setIsLoading(false);
+
+      Alert.alert(
+        "Cadastro",
+        `Não foi possível ${id ? "atualizar" : "cadastrar"} a pizza.`,
+      );
     }
   }
 
@@ -158,7 +195,7 @@ export const Product: React.FC = () => {
         <Header>
           <BackButton />
 
-          <Title>Cadastrar</Title>
+          <Title>{id ? "Atualizar" : "Cadastrar"}</Title>
 
           {id ? (
             <TouchableOpacity onPress={handleDeleteProduct}>
@@ -172,13 +209,11 @@ export const Product: React.FC = () => {
         <Upload>
           <Photo uri={image} />
 
-          {!id && (
-            <PickImageButton
-              title="Carregar"
-              type="secondary"
-              onPress={handlePickImage}
-            />
-          )}
+          <PickImageButton
+            title="Carregar"
+            type="secondary"
+            onPress={handlePickImage}
+          />
         </Upload>
 
         <Form>
@@ -228,13 +263,11 @@ export const Product: React.FC = () => {
             />
           </InputGroup>
 
-          {!id && (
-            <Button
-              title="Cadastrar pizza"
-              isLoading={isLoading}
-              onPress={handleAddProduct}
-            />
-          )}
+          <Button
+            title={`${id ? "Atualizar" : "Cadastrar"} pizza`}
+            isLoading={isLoading}
+            onPress={handleAddOrUpdateProduct}
+          />
         </Form>
       </Container>
     </TouchableWithoutFeedback>
