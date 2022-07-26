@@ -1,6 +1,6 @@
 import firestore from "@react-native-firebase/firestore";
 import { useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { ItemSeparator } from "~/components/ItemSeparator";
 import { Loading } from "~/components/Loading";
 import { OrderCard } from "~/components/OrderCard";
@@ -36,6 +36,23 @@ export const Orders: React.FC = () => {
     return unsubscribe;
   }, [user!.id]);
 
+  function handleDeliverPizza(id: OrderState["id"]) {
+    Alert.alert("Pedido", "Confirmar que a pizza foi entregue?", [
+      {
+        text: "Não",
+        style: "cancel",
+      },
+      {
+        text: "Sim",
+        onPress: async () => {
+          firestore().collection<OrderDTO>("orders").doc(id).update({
+            status: "Entregue",
+          });
+        },
+      },
+    ]);
+  }
+
   return (
     <Container>
       <Header>
@@ -53,7 +70,12 @@ export const Orders: React.FC = () => {
           contentContainerStyle={{ paddingBottom: 24, paddingHorizontal: 24 }}
           ItemSeparatorComponent={ItemSeparator}
           renderItem={({ item: order, index }) => (
-            <OrderCard index={index} data={order} />
+            <OrderCard
+              index={index}
+              data={order}
+              disabled={order.status !== "Preparando"}
+              onPress={() => handleDeliverPizza(order.id)}
+            />
           )}
         />
       )}
