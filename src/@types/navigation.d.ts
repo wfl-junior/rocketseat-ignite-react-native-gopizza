@@ -1,8 +1,5 @@
+import { OrderNavigationParams } from "~/screens/Order";
 import { ProductNavigationParams } from "~/screens/Product";
-
-export interface OrderNavigationParams {
-  id: string;
-}
 
 declare global {
   namespace ReactNavigation {

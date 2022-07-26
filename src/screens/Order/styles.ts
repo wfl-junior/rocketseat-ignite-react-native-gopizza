@@ -83,3 +83,14 @@ export const Price = styled.Text`
     color: ${theme.colors.secondary[900]};
   `}
 `;
+
+export const ErrorText = styled.Text`
+  font-size: 20px;
+  text-align: center;
+  margin: 24px;
+
+  ${({ theme }) => css`
+    font-family: ${theme.fonts.text};
+    color: ${theme.colors.secondary[900]};
+  `}
+`;
