@@ -86,6 +86,7 @@ export const Order: React.FC = () => {
       await firestore()
         .collection<OrderDTO>("orders")
         .add({
+          tableNumber,
           quantity,
           amount: amount.replace("R$", ""),
           size: selectedSize,

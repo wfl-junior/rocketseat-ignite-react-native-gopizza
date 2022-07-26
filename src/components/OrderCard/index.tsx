@@ -1,5 +1,5 @@
 import { TouchableOpacityProps } from "react-native";
-import { PizzaDTO } from "~/DTOs/PizzaDTO";
+import { OrderDTO } from "~/DTOs/OrderDTO";
 import {
   Container,
   Description,
@@ -12,34 +12,26 @@ import {
 export type OrderStatus = "Preparando" | "Pronto" | "Entregue";
 
 interface OrderCardProps extends TouchableOpacityProps {
-  name: PizzaDTO["name"];
-  imageUrl: PizzaDTO["imageUrl"];
   index: number;
-  status: OrderStatus;
-  table: number;
-  quantity: number;
+  data: OrderDTO;
 }
 
 export const OrderCard: React.FC<OrderCardProps> = ({
-  name,
-  imageUrl,
   index,
-  status,
-  table,
-  quantity,
+  data,
   ...props
 }) => (
   <Container index={index} {...props}>
-    <Image source={{ uri: imageUrl }} />
+    <Image source={{ uri: data.pizza.imageUrl }} />
 
-    <Name>{name}</Name>
+    <Name>{data.pizza.name}</Name>
 
     <Description>
-      Mesa {table.toString().padStart(2, "0")} • Qnt: {quantity}
+      Mesa {data.tableNumber.padStart(2, "0")} • Qnt: {data.quantity}
     </Description>
 
-    <StatusContainer status={status}>
-      <StatusLabel status={status}>{status}</StatusLabel>
+    <StatusContainer status={data.status}>
+      <StatusLabel status={data.status}>{data.status}</StatusLabel>
     </StatusContainer>
   </Container>
 );
